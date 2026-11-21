@@ -44,9 +44,9 @@ manifest.json     BetterNCM 插件清单
 
 ## 致谢 / Acknowledgements
 
-本项目**复刻自 BetterNCM 插件 [Taskbar-Lyrics](https://github.com/mo-jinran/Taskbar-Lyrics)（作者 mo-jinran ）**，在其设计与代码基础上修改和扩展而来。感谢原作者的工作，以及：
+本项目**复刻自 BetterNCM 插件 [Taskbar-Lyrics](https://github.com/mo-jinran/Taskbar-Lyrics)（作者 沫烬染 / mo-jinran）**，在其设计与代码基础上修改和扩展而来。感谢原作者的工作，以及：
 
 - [BetterNCM / chromatic](https://github.com/std-microblock/chromatic) —— 插件运行框架
-- [BetterNCM ts-framework](https://github.com/BetterNCM)（BetterNCM Team，GPL-3.0）—— 部分参考其插件配置界面与框架代码
+- [BetterNCM ts-framework](https://github.com/BetterNCM) —— 部分参考其插件配置界面与框架代码
 
-本项目遵循原项目的 **GPL-3.0-or-later** 许可证开源，修改内容同样以 GPL-3.0-or-later 分发。
+本项目沿袭原项目的 **MIT** 许可证开源（保留原作者版权声明），修改部分同样以 MIT 分发。

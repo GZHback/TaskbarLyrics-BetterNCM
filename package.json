@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "网易云任务栏歌词",
   "main": "index.js",
-  "repository": "https://github.com/BetterNCM/boilerplate",
+  "repository": "https://github.com/GZHback/TaskbarLyrics-BetterNCM",
   "author": "guzhu <3251711961@qq.com>",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "private": false,
   "dependencies": {},
   "devDependencies": {

@@ -85,6 +85,7 @@ function createIcon(kind: string): HTMLElement {
         underline: `<text x="7" y="13" font-size="12" fill="currentColor" font-family="sans-serif">U</text><rect x="6" y="16" width="12" height="2" rx="1" fill="currentColor"/>`,
         strike: `<text x="7" y="17" font-size="12" fill="currentColor" font-family="sans-serif">S</text><rect x="5" y="10" width="14" height="2" rx="1" fill="currentColor"/>`,
         align: `<rect x="4" y="5" width="16" height="2" rx="1" fill="currentColor"/><rect x="4" y="10" width="10" height="2" rx="1" fill="currentColor"/><rect x="4" y="15" width="14" height="2" rx="1" fill="currentColor"/>`,
+        link: `<path d="M9 15l6-6M11 7l1.5-1.5a3.5 3.5 0 0 1 5 5L15 13M13 17l-1.5 1.5a3.5 3.5 0 0 1-5-5L9 11" fill="none" stroke="currentColor" stroke-width="1.5"/>`,
     };
     svg.innerHTML = shapes[kind] ?? `<circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.5"/>`;
     return svg;
@@ -226,6 +227,31 @@ function createSlider(
     container.appendChild(input);
     container.appendChild(label);
     return container;
+}
+
+/** 可点击的外部链接控件（用 betterncm.ncm.openUrl 打开浏览器） */
+function createLinkControl(url: string): HTMLElement {
+    const link = document.createElement("a");
+    link.textContent = "打开 ↗";
+    link.style.cssText = `
+        padding: 7px 14px;
+        border: 1px solid var(--tl-control-border);
+        border-radius: 6px;
+        background-color: var(--tl-control-bg);
+        color: var(--tl-accent);
+        font-size: 13px;
+        cursor: pointer;
+        text-decoration: none;
+        white-space: nowrap;
+    `;
+    link.addEventListener("click", () => {
+        try {
+            betterncm.ncm.openUrl(url);
+        } catch (error) {
+            console.error("[Taskbar Lyrics] 打开链接失败:", error);
+        }
+    });
+    return link;
 }
 
 function createNumberInput(
@@ -707,6 +733,26 @@ function buildContent(container: HTMLElement): void {
         buildContent(container);
     });
     container.appendChild(resetBtn);
+
+    // 关于 / 反馈：满足插件商店上架准则（源码仓库 + 反馈渠道链接）
+    const REPO_URL = "https://github.com/GZHback/TaskbarLyrics-BetterNCM";
+    container.appendChild(createSectionTitle("关于"));
+    container.appendChild(
+        createRow(
+            "link",
+            "源码仓库",
+            "在 GitHub 上查看项目源代码",
+            createLinkControl(REPO_URL),
+        ),
+    );
+    container.appendChild(
+        createRow(
+            "link",
+            "问题反馈",
+            "遇到问题或建议，欢迎提交 Issue",
+            createLinkControl(`${REPO_URL}/issues`),
+        ),
+    );
 }
 
 export function createConfigView(): HTMLElement {
