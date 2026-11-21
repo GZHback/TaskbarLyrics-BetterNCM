@@ -1,0 +1,25 @@
+# 构建产物
+cpp/build/
+dist/
+native.dll
+*.obj
+*.ddi
+*.modmap
+*.exp
+*.lib
+*.pdb
+
+# 插件打包产物（发布时放 GitHub Release）
+*.plugin
+
+# 依赖
+node_modules/
+
+# 第三方参考源码（不属于本项目，禁止分发）
+_chromatic_*/
+js-framework/
+
+# IDE / 编辑器
+.vs/
+.vscode/
+.idea/
