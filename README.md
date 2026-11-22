@@ -2,7 +2,7 @@
 
 在 Windows 任务栏上实时显示网易云音乐歌词的 BetterNCM 插件
 
-![preview](./preview.png)
+![preview](./preview.jpg)
 
 ## 功能特性
 
@@ -31,7 +31,7 @@ cd cpp
 cmake --build build --config Release
 ```
 
-打包：将 `manifest.json`、`native.dll`、`preview.png`、`dist/main.js` 打为 zip 并重命名为 `taskbar_lyrics.plugin`。
+打包：将 `manifest.json`、`native.dll`、`preview.jpg`、`dist/main.js` 打为 zip 并重命名为 `taskbar_lyrics.plugin`。
 
 ## 项目结构
 

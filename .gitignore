@@ -1,7 +1,6 @@
 # 构建产物
 cpp/build/
-dist/
-native.dll
+/native.dll
 *.obj
 *.ddi
 *.modmap

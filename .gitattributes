@@ -7,6 +7,10 @@
 
 # 二进制文件
 *.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
 *.dll binary
 *.plugin binary
 *.ico binary
