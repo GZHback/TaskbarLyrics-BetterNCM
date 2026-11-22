@@ -1,6 +1,6 @@
 {
   "name": "taskbar-lyrics",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "description": "网易云任务栏歌词",
   "main": "index.js",
   "repository": "https://github.com/GZHback/TaskbarLyrics-BetterNCM",
