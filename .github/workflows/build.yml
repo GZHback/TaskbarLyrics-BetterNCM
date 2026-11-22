@@ -39,14 +39,14 @@ jobs:
       - name: Pack plugin
         shell: pwsh
         run: |
-          Copy-Item cpp/build/Release/native.dll native.dll -Force
+          Copy-Item cpp/build/native.dll native.dll -Force
           Compress-Archive -Path manifest.json, native.dll, preview.jpg, dist/main.js -DestinationPath taskbar_lyrics.plugin -Force
 
       # 组装商店抓取目录 dist/：manifest 的 injects 路径相对化，附带 CI 编译的 native.dll
       - name: Assemble dist
         shell: pwsh
         run: |
-          Copy-Item cpp/build/Release/native.dll dist/native.dll -Force
+          Copy-Item cpp/build/native.dll dist/native.dll -Force
           Copy-Item preview.jpg dist/preview.jpg -Force
           $manifest = Get-Content manifest.json -Raw -Encoding UTF8 | ConvertFrom-Json
           $manifest.injects.Main[0].file = "./main.js"
