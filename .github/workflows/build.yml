@@ -26,10 +26,15 @@ jobs:
           npm install
           npm run build
 
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
       - name: Build native.dll
         run: |
-          cmake -S cpp -B cpp/build -G "Visual Studio 17 2022" -A x64
-          cmake --build cpp/build --config Release
+          cmake -S cpp -B cpp/build -G Ninja -DCMAKE_BUILD_TYPE=Release
+          cmake --build cpp/build
 
       - name: Pack plugin
         shell: pwsh
