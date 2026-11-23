@@ -10,7 +10,7 @@ project(native LANGUAGES CXX)
 
 add_library(native SHARED "src/DllMain.cpp")
 
-target_include_directories(native PRIVATE src src/plugin src/taskbar src/window)
+target_include_directories(native PRIVATE src/plugin src/taskbar src/window)
 
 target_link_libraries(native PRIVATE
     d3d11
@@ -22,5 +22,4 @@ target_link_libraries(native PRIVATE
     oleaut32
     uiautomationcore
     user32
-    gdi32
 )

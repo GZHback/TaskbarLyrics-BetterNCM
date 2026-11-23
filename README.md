@@ -31,7 +31,7 @@ cd cpp
 cmake --build build --config Release
 ```
 
-打包：将 `manifest.json`、`native.dll`、`preview.jpg`、`dist/main.js` 打为 zip 并重命名为 `taskbar_lyrics.plugin`。
+打包：将 `dist/manifest.json`（插件包内注入路径为 `./main.js`）、`native.dll`、`preview.jpg`、`dist/main.js` 打为 zip 并重命名为 `taskbar_lyrics.plugin`。根目录 `manifest.json` 的 `./dist/main.js` 仅用于源码目录直接调试，不要用于发布包。
 
 ## 项目结构
 

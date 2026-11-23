@@ -6,10 +6,6 @@ class Registry {
 public:
     typedef std::function<void()> Callback;
 
-private:
-    Callback callback{};
-
-public:
     static void onWatch(const Registry::Callback &callback) {
         HKEY key = nullptr;
         HANDLE event = CreateEventW(nullptr, true, false, nullptr);
@@ -30,15 +26,6 @@ public:
         }
         RegCloseKey(key);
         CloseHandle(event);
-    }
-
-    static bool isLightTheme() {
-        const auto path = L"Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize";
-        const auto name = L"SystemUsesLightTheme";
-        DWORD data = 0;
-        DWORD size = sizeof(data);
-        RegGetValue(HKEY_CURRENT_USER, path, name, RRF_RT_REG_DWORD, nullptr, &data, &size);
-        return data;
     }
 
     // Windows 11（build >= 22000）判定，用于注册表值缺失时的默认行为

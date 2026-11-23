@@ -6,6 +6,8 @@
  * C++ 渲染窗口。
  */
 
+import type { ActiveChar } from "./lyrics";
+
 export const DWRITE_TEXT_ALIGNMENT = Object.freeze({
     LEADING: 0,
     TRAILING: 1,
@@ -43,6 +45,8 @@ export interface PluginConfig {
     margin_left: number;
     margin_right: number;
     line_spacing: number;
+    karaoke_enabled: boolean;
+    karaoke_glow: number;
     window_alignment: number;
     color_primary: number;
     size_primary: number;
@@ -65,6 +69,8 @@ export const DEFAULT_CONFIG: PluginConfig = {
     margin_left: 0,
     margin_right: 0,
     line_spacing: 0,
+    karaoke_enabled: true,
+    karaoke_glow: 40,
     window_alignment: TASKBAR_WINDOW_ALIGNMENT.LEFT,
     color_primary: 0xffffffff,
     size_primary: 18,
@@ -189,11 +195,10 @@ export function syncAllConfig(): void {
     }
 }
 
-/** 通知 C++ 窗口配置已更新。
- *
- * 旧版 DLL（2.0.0）的 update 调用只重新布局窗口位置、不触发重绘，
- * 因此在布局之后重发一次当前歌词内容，强制窗口用新样式立即重绘。
- */
+/** 记录最近一次发送的歌词，供样式变更后触发重绘使用 */
+const lastLyrics = { primary: " ", secondary: " " };
+
+/** 通知 C++ 窗口配置已更新：先更新布局，再补发当前歌词强制重绘。 */
 export function updateConfig(): void {
     try {
         const native = betterncm_native.native_plugin;
@@ -205,23 +210,31 @@ export function updateConfig(): void {
     }
 }
 
-/** 记录最近一次发送的歌词，供样式变更后触发重绘使用 */
-const lastLyrics = { primary: " ", secondary: " " };
-
 /**
  * 将当前行歌词（主 / 次）发送给 C++ 窗口渲染。
  *
- * 注意：当前 native.dll 为旧版协议（2.0.0），未注册 taskbar_lyrics.lyrics
- * API，歌词需通过 taskbar_lyrics.config 写入 lyric_primary / lyric_secondary
- * 两个配置键，再调用 taskbar_lyrics.update 触发重绘。
+ * native 侧统一通过 taskbar_lyrics.config 写入歌词与高亮位置，
+ * 再调用 taskbar_lyrics.update 触发重绘。
  */
-export function updateLyrics(primary: string, secondary: string): void {
+export function updateLyrics(
+    primary: string,
+    secondary: string,
+    active?: ActiveChar,
+): void {
     lastLyrics.primary = primary || " ";
     lastLyrics.secondary = secondary || " ";
     try {
         const native = betterncm_native.native_plugin;
         native.call("taskbar_lyrics.config", ["lyric_primary", lastLyrics.primary]);
         native.call("taskbar_lyrics.config", ["lyric_secondary", lastLyrics.secondary]);
+        // 逐字高亮：把当前字的偏移与长度传给 native（-1 表示无）
+        if (active && config.karaoke_enabled) {
+            native.call("taskbar_lyrics.config", ["active_offset", String(active.offset)]);
+            native.call("taskbar_lyrics.config", ["active_length", String(active.length)]);
+        } else {
+            native.call("taskbar_lyrics.config", ["active_offset", "-1"]);
+            native.call("taskbar_lyrics.config", ["active_length", "0"]);
+        }
         native.call("taskbar_lyrics.update", []);
     } catch (error) {
         console.error("[Taskbar Lyrics] 发送歌词到 native 失败:", error);

@@ -1,7 +1,6 @@
 #pragma once
 #include <windows.h>
 #include <atomic>
-#include <functional>
 #include "Config.h"
 #include "Taskbar.h"
 #include "Registry.h"
@@ -11,12 +10,8 @@ class Window {
 private:
     std::atomic<HWND> hwnd{nullptr};
     std::atomic<bool> layoutPending{false};
-    std::atomic<bool> lyricsPending{false};
-    RECT lastWindowRect{};
-    bool hasWindowRect = false;
     UINT taskbarCreatedMessage = 0;
     static constexpr auto LAYOUT_MESSAGE = WM_APP + 1;
-    static constexpr auto LYRICS_MESSAGE = WM_APP + 2;
     static constexpr auto ANIMATION_TIMER = 1;
 
     static LRESULT CALLBACK WindowProc(const HWND hwnd, const UINT message, const WPARAM wParam, const LPARAM lParam) {
@@ -33,7 +28,6 @@ private:
 
     LRESULT handleMessage(const HWND hwnd, const UINT message, const WPARAM wParam, const LPARAM lParam) {
         if (this->taskbarCreatedMessage != 0 && message == this->taskbarCreatedMessage) {
-            this->hasWindowRect = false;
             this->updateLayout();
             return 0;
         }
@@ -47,9 +41,6 @@ private:
                     PostMessage(hwnd, LAYOUT_MESSAGE, 0, 0);
                 } else {
                     this->updateLayout();
-                }
-                if (this->lyricsPending.exchange(false, std::memory_order_acq_rel)) {
-                    PostMessage(hwnd, LYRICS_MESSAGE, 0, 0);
                 }
                 break;
             }
@@ -94,14 +85,6 @@ private:
                 InvalidateRect(hwnd, nullptr, false);
                 break;
             }
-            case LYRICS_MESSAGE: {
-                this->lyricsPending.store(false, std::memory_order_release);
-                if (this->renderer.startTransition()) {
-                    SetTimer(hwnd, ANIMATION_TIMER, 16, nullptr);
-                }
-                InvalidateRect(hwnd, nullptr, false);
-                break;
-            }
             case WM_TIMER: {
                 if (wParam == ANIMATION_TIMER) {
                     InvalidateRect(hwnd, nullptr, false);
@@ -114,7 +97,6 @@ private:
             case WM_DESTROY: {
                 KillTimer(hwnd, ANIMATION_TIMER);
                 this->hwnd.store(nullptr, std::memory_order_release);
-                this->hasWindowRect = false;
                 break;
             }
             case WM_NCHITTEST: return HTTRANSPARENT;
@@ -189,24 +171,15 @@ private:
 
         const auto window = this->hwnd.load(std::memory_order_acquire);
         if (window != nullptr) {
-            const RECT nextRect{
-                .left = offset,
-                .top = taskbarFrame.top,
-                .right = offset + width,
-                .bottom = taskbarFrame.top + height
-            };
-            if (SetWindowPos(
+            SetWindowPos(
                 window,
                 HWND_TOPMOST,
-                nextRect.left,
-                nextRect.top,
+                offset,
+                taskbarFrame.top,
                 width,
                 height,
                 SWP_NOACTIVATE | SWP_NOOWNERZORDER | SWP_NOSENDCHANGING | SWP_SHOWWINDOW
-            )) {
-                this->lastWindowRect = nextRect;
-                this->hasWindowRect = true;
-            }
+            );
         }
     }
 
@@ -262,17 +235,4 @@ public:
         }
     }
 
-    void updateLyrics() {
-        if (this->lyricsPending.exchange(true, std::memory_order_acq_rel)) {
-            return;
-        }
-        const auto window = this->hwnd.load(std::memory_order_acquire);
-        if (window == nullptr) {
-            this->lyricsPending.store(false, std::memory_order_release);
-            return;
-        }
-        if (!PostMessage(window, LYRICS_MESSAGE, 0, 0)) {
-            this->lyricsPending.store(false, std::memory_order_release);
-        }
-    }
 };

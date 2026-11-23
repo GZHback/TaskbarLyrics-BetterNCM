@@ -21,16 +21,4 @@ public:
         }
         return nullptr;
     }
-
-    static const char *lyrics(void **args) {
-        if (args == nullptr || args[0] == nullptr || args[1] == nullptr) {
-            return nullptr;
-        }
-        setConfig("lyric_primary", static_cast<const char *>(args[0]));
-        setConfig("lyric_secondary", static_cast<const char *>(args[1]));
-        if (auto *window = Plugin::getInstance().window.load(std::memory_order_acquire)) {
-            window->updateLyrics();
-        }
-        return nullptr;
-    }
 };

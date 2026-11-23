@@ -2,7 +2,6 @@
 #include <windows.h>
 #include <atomic>
 #include <thread>
-#include "Config.h"
 #include "Window.h"
 
 class Plugin {

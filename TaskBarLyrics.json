@@ -1,7 +1,7 @@
 {
     "name": "TaskBarLyrics",
-    "repo": "GZHback/TaskbarLyrics-Extension",
+    "repo": "GZHback/TaskbarLyrics-BetterNCM",
     "branch": "main",
     "subpath": "/dist",
-    "author": "咕杼"
+    "author": "guzhu"
 }

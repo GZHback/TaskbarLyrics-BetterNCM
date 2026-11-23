@@ -29,6 +29,12 @@ struct Config {
     int margin_left = 0;
     int margin_right = 0;
     int line_spacing = 0;
+    // 逐字高亮（卡拉OK）
+    bool karaoke_enabled = true;
+    int karaoke_glow = 40;
+    // 当前唱到的字在 lyric_primary 中的位置（UTF-16 码元偏移与长度），-1 表示无
+    int active_offset = -1;
+    int active_length = 0;
     TASKBAR_WINDOW_ALIGNMENT window_alignment = TASKBAR_WINDOW_ALIGNMENT::TASKBAR_WINDOW_ALIGNMENT_LEFT;
     // 主要歌词设置
     unsigned int color_primary = 0xFFFFFFFF;
@@ -66,6 +72,11 @@ inline void setConfig(const std::string &key, const std::string &value) {
         {"margin_left", [](const std::string &str) { config.margin_left = std::stoi(str); }},
         {"margin_right", [](const std::string &str) { config.margin_right = std::stoi(str); }},
         {"line_spacing", [](const std::string &str) { config.line_spacing = std::stoi(str); }},
+        // 逐字高亮（卡拉OK）
+        {"karaoke_enabled", [](const std::string &str) { config.karaoke_enabled = (str == "true"); }},
+        {"karaoke_glow", [](const std::string &str) { config.karaoke_glow = std::stoi(str); }},
+        {"active_offset", [](const std::string &str) { config.active_offset = std::stoi(str); }},
+        {"active_length", [](const std::string &str) { config.active_length = std::stoi(str); }},
         {"window_alignment", [](const std::string &str) { config.window_alignment = static_cast<TASKBAR_WINDOW_ALIGNMENT>(std::stoi(str)); }},
         // 主要歌词设置
         {"size_primary", [](const std::string &str) { config.size_primary = std::stoi(str); }},

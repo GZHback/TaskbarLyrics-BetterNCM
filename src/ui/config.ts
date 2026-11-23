@@ -445,6 +445,28 @@ function buildContent(container: HTMLElement): void {
     );
     container.appendChild(
         createRow(
+            "font",
+            "逐字高亮",
+            "当前唱到的字高亮发光（卡拉OK，仅逐字歌词可用）",
+            createSwitch(config.karaoke_enabled, (value) => {
+                config.karaoke_enabled = value;
+                updateConfig();
+            }),
+        ),
+    );
+    container.appendChild(
+        createRow(
+            "weight",
+            "光晕强度",
+            "逐字高亮的光晕强弱",
+            createSlider(config.karaoke_glow, 0, 100, 5, (value) => {
+                config.karaoke_glow = value;
+                updateConfig();
+            }),
+        ),
+    );
+    container.appendChild(
+        createRow(
             "margin-left",
             "左边距",
             "歌词窗口左侧留出的空白距离（像素）",

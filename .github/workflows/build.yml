@@ -40,7 +40,7 @@ jobs:
         shell: pwsh
         run: |
           Copy-Item cpp/build/native.dll native.dll -Force
-          Compress-Archive -Path manifest.json, native.dll, preview.jpg, dist/main.js -DestinationPath taskbar_lyrics.plugin -Force
+          Compress-Archive -Path dist/manifest.json, native.dll, preview.jpg, dist/main.js -DestinationPath taskbar_lyrics.plugin -Force
 
       # 组装商店抓取目录 dist/：manifest 的 injects 路径相对化，附带 CI 编译的 native.dll
       - name: Assemble dist
